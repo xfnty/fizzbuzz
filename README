@@ -1,0 +1,3 @@
+Build and run:
+
+clear && gcc main.c -o main && ./main 15
