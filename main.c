@@ -23,61 +23,94 @@ typedef struct fizzbuzz_s {
     void (*func)(int n);
 } fizzbuzz_t;
 
-void typical_fizzbuzz(int n) {
-    if (n % 3 == 0) {
-        printf("Fizz");
-    }
-    else if (n % 5 == 0) {
-        printf("Buzz");
-    }
-    else if (n % 15 == 0) {
-        printf("FizzBuzz");
-    }
-    else {
-        printf("%d", n);
-    }
-}
 
-
-void single_if_fizzbuzz(int n) {
-    unsigned char flags = ((n % 3 == 0) | ((n % 5 == 0) << 1)) & 0b00000011;
-    switch (flags) {
-        case 0b00000001:
+void typical_fizzbuzz(int m) {
+    for (size_t i = 1; i < m; i++) {
+        if (i % 3 == 0) {
             printf("Fizz");
-            break;
-        case 0b00000010:
+        }
+        else if (i % 5 == 0) {
             printf("Buzz");
-            break;
-        case 0b00000011:
+        }
+        else if (i % 15 == 0) {
             printf("FizzBuzz");
-            break;
-        default:
-            printf("%d", n);
+        }
+        else {
+            printf("%zu", i);
+        }
+        printf("\n");
     }
-    printf("\n");
 }
 
 
-typedef bool (*checker_f)(int n);
-bool times_3(int n) { return n % 3 == 0; }
-bool times_5(int n) { return n % 3 == 0; }
+void single_if_fizzbuzz(int m) {
+    for (size_t i = 1; i < m; i++) {
+        unsigned char flags = ((i % 3 == 0) | ((i % 5 == 0) << 1)) & 0b00000011;
+        switch (flags) {
+            case 0b00000001:
+                printf("Fizz");
+                break;
+            case 0b00000010:
+                printf("Buzz");
+                break;
+            case 0b00000011:
+                printf("FizzBuzz");
+                break;
+            default:
+                printf("%zu", i);
+        }
+        printf("\n");
+    }
+}
 
-void variable_msg_fizzbuzz(int n) {
+
+// Source: https://github.com/Keith-S-Thompson/fizzbuzz-c/blob/master/fizzbuzz020.c
+void duffs_fizzbuzz(int m) {
+    int i = 1;
+    switch (i % 15) {
+        case 0:  do { puts("FizzBuzz"); i++;
+        case 1:       printf("%d\n",    i++);
+        case 2:       printf("%d\n",    i++);
+        case 3:       puts("Fizz");     i++;
+        case 4:       printf("%d\n",    i++);
+        case 5:       puts("Buzz");     i++;
+        case 6:       puts("Fizz");     i++;
+        case 7:       printf("%d\n",    i++);
+        case 8:       printf("%d\n",    i++);
+        case 9:       puts("Fizz");     i++;
+        case 10:      puts("Buzz");     i++;
+        case 11:      printf("%d\n",    i++);
+        case 12:      puts("Fizz");     i++;
+        case 13:      printf("%d\n",    i++);
+        case 14:      printf("%d\n",    i++);
+                 } while(i < m);
+    }
+    printf("*I don't really understand this*\n");
+}
+
+
+typedef bool (*checker_f)(size_t i);
+bool times_3(size_t i) { return i % 3 == 0; }
+bool times_5(size_t i) { return i % 5 == 0; }
+void variable_msg_fizzbuzz(int m) {
     const char* messages[] = { "Fizz", "Buzz" };
     checker_f checkers[] = { times_3, times_5 };
 
-    bool printed_flag = false;
-    for (int i = 0; i < sizeof(checkers)/sizeof(checkers[0]); i++) {
-        if (checkers[i](n)) {
-            printf("%s", messages[i]);
-            printed_flag = true;
+    for (size_t i = 1; i < m; i++) {
+        bool printed_flag = false;
+
+        for (int j = 0; j < sizeof(checkers)/sizeof(checkers[0]); j++) {
+            if (checkers[j](i)) {
+                printf("%s", messages[j]);
+                printed_flag = true;
+            }
         }
+
+        if (!printed_flag)
+            printf("%zu", i);
+
+        printf("\n");
     }
-
-    if (!printed_flag)
-        printf("%d", n);
-
-    printf("\n");
 }
 
 
@@ -85,36 +118,41 @@ typedef bool (*msg_f)(int n);
 bool msg3(int n) { if (n % 3 == 0) { printf("Fizz"); return true; } return false; }
 bool msg5(int n) { if (n % 5 == 0) { printf("Buzz"); return true; } return false; }
 
-void variable_msg_v2_fizzbuzz(int n) {
+void variable_msg_v2_fizzbuzz(int m) {
     msg_f messages[] = { msg3, msg5 };
 
-    bool printed_flag = false;
-    for (int i = 0; i < sizeof(messages)/sizeof(messages[0]); i++)
-        if (messages[i](n))
-            printed_flag = true;
+    for (size_t i = 1; i < m; i++) {
+        bool printed_flag = false;
+        for (int j = 0; j < sizeof(messages)/sizeof(messages[0]); j++)
+            if (messages[j](i))
+                printed_flag = true;
 
-    if (!printed_flag)
-        printf("%d", n);
+        if (!printed_flag)
+            printf("%zu", i);
 
-    printf("\n");
+        printf("\n");
+    }
 }
 
 
-void single_printf_fizzbuzz(int n) {
+void single_printf_fizzbuzz(int m) {
     const char* messages[] = {
-        "%d\n", "Fizz\n", "Buzz\n", "FizzBuzz\n"
+        "%zu\n", "Fizz\n", "Buzz\n", "FizzBuzz\n"
     };
 
-    printf(messages[((n % 3 == 0) | ((n % 5 == 0) << 1)) & 0b00000011], n);
+    for (size_t i = 1; i < m; i++) {
+        printf(messages[((i % 3 == 0) | ((i % 5 == 0) << 1)) & 0b00000011], i);
+    }
 }
 
 
 // Source post: https://dev.to/shensd/taking-a-look-at-an-odd-fizzbuzz-solution-3hca
 // Author: wunkolo@github.com
-void literally_single_printf_fizzbuzz(int n) {
-    size_t i = n; // Could be in the argument list
-    printf("%zu\n\0\0\0\0Fizz\n\0\0\0Buzz\n\0\0\0FizzBuzz\n" 
-        + (((0x1241843 >> ((i % 15) * 2)) & 0b11) * 8), i);
+void literally_single_printf_fizzbuzz(int m) {
+    for (size_t i = 1; i < m; i++) {
+        printf("%zu\n\0\0\0\0Fizz\n\0\0\0Buzz\n\0\0\0FizzBuzz\n" 
+            + (((0x1241843 >> ((i % 15) * 2)) & 0b11) * 8), i);
+    }
 }
 
 
@@ -127,6 +165,7 @@ int main(int argc, char const *argv[])
         {"variable message v2", variable_msg_v2_fizzbuzz},
         {"single printf", single_printf_fizzbuzz},
         {"literally single printf", literally_single_printf_fizzbuzz},
+        {"Duff's device", duffs_fizzbuzz},
     };
 
     if (argc < 3) {
@@ -151,9 +190,7 @@ int main(int argc, char const *argv[])
     }
 
     BENCHMARK(
-        for (int i = 1; i < m + 1; i++) {
-            fizzbuzzes[n-1].func(i);
-        }
+        fizzbuzzes[n-1].func(m);
     );
 
     return 0;
