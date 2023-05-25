@@ -1,3 +1,7 @@
-Build and run:
+More examples here: https://github.com/Keith-S-Thompson/fizzbuzz-c
 
-clear && gcc main.c -o main && ./main 15
+Build and run:
+clear && gcc -Ofast main.c -o main && ./main 1 15
+
+Print assembly code:
+clear && clear && objdump --disassemble=<FUNCTION NAME> ./main
